@@ -21,15 +21,30 @@ from wagtail.wagtailsearch import index
 from wagtail.wagtailsnippets.models import register_snippet
 from django.contrib.auth.models import AbstractUser
 
+
+
+default_body =  StreamField(
+            [
+        ('heading', blocks.CharBlock(classname="full title")),
+        ('paragraph', blocks.RichTextBlock()),
+        ('image', ImageChooserBlock()),
+    ],
+
+            verbose_name="Тело",
+            default=""
+
+            )
+
+
 class User(AbstractUser):
     class Meta:
         verbose_name = "Пользователь"
 
 
-@register_snippet
-class Personal(models.Model):
+class Persona(Orderable, Page):
     first_name = models.CharField("Имя", max_length=255, blank=True)
     last_name = models.CharField("Фамилия", max_length=255, blank=True)
+    position = models.CharField("Должность", max_length=255, blank=True)
     image = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
@@ -38,13 +53,43 @@ class Personal(models.Model):
         related_name='+', 
         verbose_name = "Лицо"
     )
+    parent_page_types = ['core.PersonalIndexPage']
     class Meta:
         verbose_name = "Персонал"
+        verbose_name_plural = "Персонал"
+
+Persona.content_panels = [
+    FieldPanel('first_name', classname="full title"),
+    FieldPanel('last_name', classname="full title"),
+    FieldPanel('position', classname="full title"),
+    # StreamFieldPanel('body'),
+    ImageChooserPanel('image'),
+    ]
+
+class PersonalIndexPage(Page):
+    body = default_body 
+    subpage_types = ['core.Persona']
+
+    @property
+    def services(self):
+        services = Persona.objects.live().descendant_of(self)
+        return services
+
+    class Meta:
+        verbose_name = "Заглавная персонала"
+        verbose_name_plural = "Заглавные персонала"
+
+PersonalIndexPage.content_panels = [
+    FieldPanel('title', classname="full title"),
+    StreamFieldPanel('body'),
+    ]
+
 
 @register_snippet
 class Comment(models.Model):
     user = models.ForeignKey(User)
     text = models.TextField("Текст")
+    date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     class Meta:
         verbose_name = "Отзыв"
 
@@ -62,15 +107,69 @@ class HomePage(Page):
             default=""
 
             )
-
-
     class Meta:
         verbose_name = "Заглавная"
 
 HomePage.content_panels = [
     FieldPanel('title', classname="full title"),
-    # StreamFieldPanel('body'),
+    StreamFieldPanel('body'),
     ]
 
+
+
+class License(Page):
+    body = StreamField(
+            [
+        ('heading', blocks.CharBlock(classname="full title")),
+        ('paragraph', blocks.RichTextBlock()),
+        ('image', ImageChooserBlock()),
+    ],
+
+            verbose_name="Тело",
+            default=""
+
+            )
+
+    class Meta:
+        verbose_name = "Лицензия"
+
+License.content_panels = [
+    FieldPanel('title', classname="full title"),
+    StreamFieldPanel('body'),
+    ]
+
+class ServiceIndexPage(Page):
+    body = default_body 
+    subpage_types = ['core.ServicePage']
+
+    @property
+    def services(self):
+        services = ServicePage.objects.live().descendant_of(self)
+        return services
+
+    class Meta:
+        verbose_name = "Заглавная услуг"
+        verbose_name_plural = "Заглавные услуг"
+
+ServiceIndexPage.content_panels = [
+    FieldPanel('title', classname="full title"),
+    StreamFieldPanel('body'),
+    ]
+
+
+
+class ServicePage(Page):
+    body = default_body 
+    parent_page_types = ['core.ServiceIndexPage']
+    class Meta:
+        verbose_name = "Услуга"
+        verbose_name_plural = "Услуги"
+
+
+
+ServicePage.content_panels = [
+    FieldPanel('title', classname="full title"),
+    StreamFieldPanel('body'),
+    ]
 
 
