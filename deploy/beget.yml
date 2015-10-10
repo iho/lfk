@@ -1,0 +1,213 @@
+---
+- name: beget deploy
+  hosts: production
+  vars:
+    project_root: /home/i/infopdy5/l-f-k.ru
+    python_source: ~/.local/bin/python3
+    domain_name: l-f-k.ru
+    db_name: infopdy5_lfk 
+    db_pass: h{KWWz2#
+    timestamp: 1
+  # vars_files:
+  #   - secrets/{{ inventory_hostname }}.yml
+  tasks:
+
+  - name: create venv
+    tags: 
+      - deploy
+    command: >
+      creates={{ project_root }}/venv 
+      /home/i/infopdy5/.local/bin/virtualenv-3.4 {{ project_root }}/venv
+
+  - name: create logs dir
+    tags: 
+      - deploy
+    file: >
+      path={{ project_root }}/logs
+      state=directory
+
+  - name: create public_html dir
+    tags: 
+      - deploy
+      - rollback
+
+    file: >
+      path={{ project_root }}/public_html
+      state=directory
+
+  - name: create media dir
+    tags: 
+      - deploy
+      - rollback
+
+    file: >
+      path={{ project_root }}/public_html/media
+      state=directory
+
+  - name: create static dir
+    tags: 
+      - deploy
+      - rollback
+
+    file: >
+      path={{ project_root }}/public_html/static
+      state=directory
+
+  - name: create tmp dir
+    tags: 
+      - deploy
+    file: >
+      path={{ project_root }}/tmp 
+      state=directory
+
+  # backup
+  - name: create dump db
+    mysql_db: >
+      state=dump
+      target={{ project_root }}/tmp/dump.sql
+      name={{ db_name }}
+      login_user={{ db_name }}
+      login_password={{ db_pass }}
+    tags:
+      - backup
+      - deploy
+
+  - name: create backups dir
+    file: >
+      path={{ project_root }}/backups
+      state=directory
+    tags:
+      - backup
+      - deploy
+
+  - shell: date +%d%m%Y-%H%M%S
+    register: current_time
+    tags: 
+      - backup
+
+  - name: create backup archive
+    command: > 
+      tar -zcvf {{ project_root }}/backups/{{ current_time.stdout }}.tar.gz
+      --directory={{ project_root }}
+      app
+      public_html/media
+      tmp/dump.sql
+    tags:
+      - backup
+
+  # rollback
+  - name: restore from last_deploy archive
+    unarchive: >
+      src={{ project_root }}/backups/last_deploy.tar.gz
+      dest={{ project_root }}
+      copy=no
+    tags:
+      - rollback
+
+  - name: restore dump db
+    mysql_db: >
+      state=import
+      target={{ project_root }}/tmp/dump.sql
+      name={{ db_name }}
+      login_user={{ db_name }}
+      login_password={{ db_pass }}
+    tags:
+      - rollback
+
+  # deploy
+  - name: create backup archive before deploy
+    command: > 
+      tar -zcvf {{ project_root }}/backups/last_deploy.tar.gz
+      --directory={{ project_root }}
+      app
+      public_html/media
+      tmp/dump.sql
+    tags:
+      - deploy
+
+  - name: upload archive
+    tags: 
+      - deploy
+    unarchive: >
+      src=/tmp/deploy.tar 
+      dest={{ project_root }}
+
+  - name: install requirements
+    tags: 
+      - deploy
+    pip: >
+      virtualenv={{ project_root }}/venv
+      requirements={{ project_root }}/requirements/prod.txt
+
+  - name: create uwsgi conf
+    tags: 
+      - deploy
+    template: >
+      src=templates/passenger_wsgi.py.j2
+      dest={{ project_root }}/passenger_wsgi.py
+
+  - name: create htaccess file
+    tags: 
+      - deploy
+    template: >
+      src=templates/htaccess.j2
+      dest={{ project_root }}/public_html/.htaccess
+
+  - name: django migrate
+    tags: 
+      - deploy
+    django_manage: >
+      command=migrate
+      app_path={{ project_root }}/app
+      virtualenv={{ project_root }}/venv
+
+  - name: django collectstatic
+    tags: 
+      - deploy
+      - rollback
+    django_manage: >
+      command=collectstatic
+      app_path={{ project_root }}/app
+      virtualenv={{ project_root }}/venv
+
+  - name: restart server
+    tags: 
+      - deploy
+      - rollback
+    command: >
+      touch {{ project_root }}/tmp/restart.txt
+
+  - name: create fixture file
+    tags:
+      - dump
+    shell: >
+     {{ project_root }}/venv/bin/python {{ project_root }}/app/manage.py dumpdata --natural-foreign --indent=4 -e contenttypes -e auth.Permission -e sessions -e wagtailcore.pagerevision --format xml > {{ project_root }}/tmp/dump.xml
+  - name: fetch dump json
+    tags:
+      - dump
+    fetch: >
+      flat=yes
+      src={{ project_root }}/tmp/dump.xml
+      dest=../app/core/fixtures/dump.xml
+
+  - name: prepare media arch
+    tags:
+      - dump
+    command: >
+      tar -zcvf {{ project_root }}/tmp/dump_media.tar.gz
+      --directory={{ project_root }}/public_html
+      media
+
+  - name: fetch media arch
+    tags:
+      - dump
+    fetch: >
+      flat=yes
+      src={{ project_root }}/tmp/dump_media.tar.gz
+      dest=/tmp/
+
+  - name: unpack media dump
+    tags:
+      - dump
+    local_action: >
+      command tar xzf /tmp/dump_media.tar.gz -C ../app/core/fixtures/

@@ -1,0 +1,8 @@
+local_main ansible_ssh_host=127.0.0.1
+beget ansible_ssh_host=mario.beget.ru ansible_ssh_user=infopdy5
+
+[development]
+local_main ansible_connection=local
+
+[production]
+beget
