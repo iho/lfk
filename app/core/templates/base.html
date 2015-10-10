@@ -19,8 +19,8 @@
     {% compress css %}
     <link rel="stylesheet"  href="{% static 'css/vendor.min.css' %}">
     <link rel="stylesheet"  href="{% static 'css/app.min.css' %}">
-    
     {% endcompress %}
+    <link rel="stylesheet"  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     {% block extra_css %}
 
     {% endblock %}
@@ -28,6 +28,8 @@
 <body class="{% block body_class %}{% endblock %}">
     {% wagtailuserbar %}
     {% block content %}{% endblock %}
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     {% compress js %}
     
     <script type="text/javascript" src="{% static 'js/app.min.js' %}"></script>
