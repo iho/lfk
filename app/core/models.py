@@ -22,7 +22,9 @@ from wagtail.wagtailsnippets.models import register_snippet
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
-    pass
+    class Meta:
+        verbose_name = "Пользователь"
+
 
 @register_snippet
 class Personal(models.Model):
