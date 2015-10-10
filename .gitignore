@@ -1,3 +1,14 @@
+# My ignore 
+
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+.vagrant
+venv
+.idea
+local_settings.py
+public
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
