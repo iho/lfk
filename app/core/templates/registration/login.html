@@ -1,12 +1,14 @@
 {% extends "registration/registration_base.html" %}
 {% load i18n %}
+{% load bootstrap3 %}
 
 {% block title %}{% trans "Log in" %}{% endblock %}
 
 {% block content %}
 <form method="post" action="">
     {% csrf_token %}
-    {{ form.as_p }}
+    {# {{ form.as_p }} #} 
+    {% bootstrap_form form %}
     <input type="submit" value="{% trans 'Log in' %}" />
     <input type="hidden" name="next" value="{{ next }}" />
 </form>
@@ -14,8 +16,6 @@
 <p>{% trans "Forgot your password?" %} <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>.</p>
 <p>{% trans "Not a member?" %} <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>.</p>
 {% endblock %}
-
-
 {% comment %}
 **registration/login.html**
 
@@ -43,3 +43,4 @@ template context variables:
     request.META['SERVER_NAME']. For more on sites, see The
     "sites" framework.
 {% endcomment %}
+

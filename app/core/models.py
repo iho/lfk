@@ -40,40 +40,50 @@ class User(AbstractUser):
     class Meta:
         verbose_name = "Пользователь"
 
-
-class Persona(Orderable, Page):
+@register_snippet
+class Personal(models.Model):
     first_name = models.CharField("Имя", max_length=255, blank=True)
     last_name = models.CharField("Фамилия", max_length=255, blank=True)
     position = models.CharField("Должность", max_length=255, blank=True)
-    image = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+', 
-        verbose_name = "Лицо"
-    )
-    parent_page_types = ['core.PersonalIndexPage']
+    # image = ImageField(upload_to="Image")
+    # image = models.ForeignKey(
+    #     'wagtailimages.Image',
+    #     null=True,
+    #     blank=True,
+    #     on_delete=models.SET_NULL,
+    #     related_name='+', 
+    #     verbose_name = "Лицо"
+    # )
+    # parent_page_types = ['core.PersonalIndexPage']
+    # parent_page_types = []
+    def __str__(self):
+        return self.first_name + " " + self.last_name
     class Meta:
         verbose_name = "Персонал"
         verbose_name_plural = "Персонал"
 
-Persona.content_panels = [
-    FieldPanel('first_name', classname="full title"),
-    FieldPanel('last_name', classname="full title"),
-    FieldPanel('position', classname="full title"),
-    # StreamFieldPanel('body'),
-    ImageChooserPanel('image'),
-    ]
+# Personal.content_panels = [
+#     FieldPanel('first_name', classname="full title"),
+#     FieldPanel('last_name', classname="full title"),
+#     FieldPanel('position', classname="full title"),
+#     # StreamFieldPanel('body'),
+#     ImageChooserPanel('image'),
+#     ]
 
 class PersonalIndexPage(Page):
     body = default_body 
-    subpage_types = ['core.Persona']
+    # subpage_types = ['core.Persona']
 
-    @property
-    def services(self):
-        services = Persona.objects.live().descendant_of(self)
-        return services
+    template = "core/personal.html"
+    # @property
+    # def services(self):
+    #     services = Personal.objects.live().descendant_of(self)
+    #     return services
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request,  *args, **kwargs)
+        context['personals'] = Personal.objects.all()
+        return context 
 
     class Meta:
         verbose_name = "Заглавная персонала"
@@ -108,7 +118,7 @@ class HomePage(Page):
 
             )
     class Meta:
-        verbose_name = "Заглавная"
+        verbose_name = "Домашняя"
 
 HomePage.content_panels = [
     FieldPanel('title', classname="full title"),
@@ -129,7 +139,7 @@ class License(Page):
             default=""
 
             )
-
+    template = "core/licenses.html"
     class Meta:
         verbose_name = "Лицензия"
 
@@ -147,6 +157,7 @@ class ServiceIndexPage(Page):
         services = ServicePage.objects.live().descendant_of(self)
         return services
 
+    template = "core/services.html"
     class Meta:
         verbose_name = "Заглавная услуг"
         verbose_name_plural = "Заглавные услуг"
@@ -160,6 +171,7 @@ ServiceIndexPage.content_panels = [
 
 class ServicePage(Page):
     body = default_body 
+    # parent_page_types = ['core.ServiceIndexPage']
     parent_page_types = ['core.ServiceIndexPage']
     class Meta:
         verbose_name = "Услуга"

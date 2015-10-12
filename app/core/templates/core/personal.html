@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static core_tags %}
+{% block body_class %}template-{{ self.get_verbose_name|slugify }}{% endblock %}
+{% block content %}
+Персонал
+
+{% for pers in personals %}
+<p>
+    {{ pers.first_name }}
+    {{ pers.last_name }}
+    {{ pers.position }}
+
+</p>
+{% endfor %}
+    
+{% endblock %}

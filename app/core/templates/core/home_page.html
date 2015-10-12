@@ -2,7 +2,6 @@
 {% load static core_tags %}
 {% block body_class %}template-{{ self.get_verbose_name|slugify }}{% endblock %}
 {% block content %}
-auth_login
 <div class="top_header">
     <div class="container">
         <ul class="">
@@ -12,7 +11,7 @@ auth_login
         </ul>
 
         <ul class="nav nav">
-            <li><a href=" {% url 'login' %} ">Вход</a></li>
+            <li><a href="#login">Вход</a></li>
             <li><a href=" {% url 'registration_register' %} ">Регистрация</a></li>
         </ul>
     </div>
