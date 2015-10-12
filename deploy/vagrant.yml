@@ -1,20 +1,22 @@
 ---
+
 - name: vagrant provisioning
   vars:
-    project_root: '../'
-    venv_path: 'venv'
-    # db_name: vagrant
-    # db_pass: vagrant
-    # db_user: vagrant
-  hosts: 127.0.0.1
-  connection: local
+    project_root: '/home/vagrant/share'
+    venv_path: '/home/vagrant/venv'
+    db_name: vagrant
+    db_pass: vagrant
+    db_user: vagrant
+  hosts: development
   tasks:
   - name: install packages
     sudo: true
     apt: name={{ item }} state=latest update_cache=no
     with_items:
+      - python-pip
       - python3-dev
       - gettext
+      - python-dev
       - libjpeg-dev
       - libfreetype6-dev
       - zlib1g-dev
@@ -25,36 +27,35 @@
       - libmysqlclient-dev
       - git
 
-#   - name: add mysql user
-#     mysql_user: name=vagrant
-#                 host={{ item }}
-#                 password=vagrant priv=*.*:ALL,GRANT
-#                 login_user=root
-#                 login_password=
-#     with_items:
-#       - '%'
-#       - localhost
+  - name: add mysql user
+    mysql_user: name=vagrant
+                host={{ item }}
+                password=vagrant priv=*.*:ALL,GRANT
+                login_user=root
+                login_password=
+    with_items:
+      - '%'
+      - localhost
 
-#   - name: create mysql databases
-#     mysql_db: name=vagrant
-#               state=present
+  - name: create mysql databases
+    mysql_db: name=vagrant
+              state=present
 
-#   - file: path=/etc/mysql/conf.d state=directory
+  - file: path=/etc/mysql/conf.d state=directory
 
-#   - name: Install mysql command line client configuration file
-#     copy: src=templates/my.cnf.j2 dest=/home/vagrant/.my.cnf owner=vagrant group=vagrant
+  - name: Install mysql command line client configuration file
+    copy: src=templates/my.cnf.j2 dest=/home/vagrant/.my.cnf owner=vagrant group=vagrant
 
-  # - name: create venv
-  # # command: creates={{ venv_path }} virtualenv {{ venv_path }} -p python3 --always-copy
-  #   command: creates={{ project_root }} virtualenv {{ venv_path }} -p python3 --always-copy
+  - name: create venv
+    command: creates={{ venv_path }} virtualenv {{ venv_path }} -p python3 --always-copy
 
-  # - name: install requirements
-  #   pip: 
-  #     requirements={{ project_root }}requirements/dev.txt
-  #     virtualenv={{ venv_path }}
+  - name: install requirements
+    pip: 
+      requirements={{ project_root }}/requirements/dev.txt
+      virtualenv={{ venv_path }}
 
-  # - name: deploy app
-  #   django_manage:
-  #     command=migrate
-  #     app_path={{ project_root }}/app
-  #     virtualenv={{ venv_path }}
+  - name: deploy app
+    django_manage:
+      command=migrate
+      app_path={{ project_root }}/app
+      virtualenv={{ venv_path }}
