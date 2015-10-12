@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'wagtail.wagtailforms',
 
     'core',
+'registration', 
 )
 
 MIDDLEWARE_CLASSES = (
@@ -154,6 +155,11 @@ LOGIN_REDIRECT_URL = 'wagtailadmin_home'
 WAGTAIL_SITE_NAME = "m8print"
 
 AUTH_USER_MODEL = 'core.User'
+ACCOUNT_ACTIVATION_DAYS = 2
+REGISTRATION_AUTO_LOGIN = True 
+REGISTRATION_EMAIL_SUBJECT_PREFIX = '[Регистрация на сайте]'
+SEND_ACTIVATION_EMAIL = False
+
 # Use Elasticsearch as the search backend for extra performance and better search results:
 # http://wagtail.readthedocs.org/en/latest/howto/performance.html#search
 # http://wagtail.readthedocs.org/en/latest/core_components/search/backends.html#elasticsearch-backend

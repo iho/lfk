@@ -2,65 +2,19 @@
 {% load static core_tags %}
 {% block body_class %}template-{{ self.get_verbose_name|slugify }}{% endblock %}
 {% block content %}
-<style>
-a {
-    color: #c7254e;
-    text-decoration: underline;
-}
-
-
-body {
-    font-family: Georgia, "Times New Roman", Times, serif;
-    color: #555;
-}
-.top_header{
-    background-color: #428bca;
-    -webkit-box-shadow: inset 0 -2px 5px rgba(0,0,0,.1);
-    box-shadow: inset 0 -2px 5px rgba(0,0,0,.1);
-
-}
-
-.top_header a {
-    text-decoration: none;
-    color: white;
-}
-
-.blog-footer {
-    padding: 40px 0;
-    color: #999;
-    text-align: center;
-    background-color: #f9f9f9;
-    border-top: 1px solid #e5e5e5;
-}
-.blog-footer p:last-child {
-    margin-bottom: 0;
-}
-.rigth {
-    float: right;  
-    width: 20%;
-}
-.center {
-    margin: 0 auto;
-}
-</style>
-
+auth_login
 <div class="top_header">
     <div class="container">
-        <div class="center" style="float: left; width: 80%">
-            <ul class="">
-                <li class="active"><a href="#">Главная</a></li>
-                <li><a href="#about">Услуги</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </div>
+        <ul class="">
+            <li class="active"><a href="#">Главная</a></li>
+            <li><a href="#about">Услуги</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
 
-        <div class="rigth">
-            <ul class="">
-                <li class="active"><a href="#">Главная</a></li>
-                <li><a href="#about">Услуги</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </div>
+        <ul class="nav nav">
+            <li><a href=" {% url 'login' %} ">Вход</a></li>
+            <li><a href=" {% url 'registration_register' %} ">Регистрация</a></li>
+        </ul>
     </div>
 </div>
 
