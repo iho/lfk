@@ -19,26 +19,17 @@ from wagtail.wagtailcore.blocks import RawHTMLBlock
 from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.wagtailsearch import index
 from wagtail.wagtailsnippets.models import register_snippet
-from django.contrib.auth.models import AbstractUser
+
+from wagtail.wagtailembeds.blocks import EmbedBlock
 
 
+from wagtail.wagtailcore.blocks import  RawHTMLBlock
 
-default_body =  StreamField(
-            [
-        ('heading', blocks.CharBlock(classname="full title")),
-        ('paragraph', blocks.RichTextBlock()),
-        ('image', ImageChooserBlock()),
-    ],
+from wagtail.wagtailcore.blocks import PageChooserBlock
 
-            verbose_name="Тело",
-            default=""
+from wagtail.wagtailsnippets.blocks import SnippetChooserBlock
 
-            )
-
-
-class User(AbstractUser):
-    class Meta:
-        verbose_name = "Пользователь"
+from wagtail.wagtailcore.blocks import ListBlock
 
 @register_snippet
 class Personal(models.Model):
@@ -70,6 +61,46 @@ class Personal(models.Model):
 #     ImageChooserPanel('image'),
 #     ]
 
+
+
+default_body =  StreamField(
+            [
+        ('heading', blocks.CharBlock(classname="full title")),
+        ('paragraph', blocks.RichTextBlock()),
+        # ('embedded_video', EmbedBlock(icon="media")),
+        ('image', ImageChooserBlock()),
+        # ('snippet', SnippetChooserBlock(Personal)),
+        # ('raw_html', RawHTMLBlock()),
+    ],
+
+            verbose_name="Тело",
+            default=""
+
+            )
+
+from wagtail.wagtailcore import blocks
+class GoogleMapBlock(blocks.StructBlock):
+    map_long = blocks.CharBlock(required=True,max_length=255)
+    map_lat = blocks.CharBlock(required=True,max_length=255)
+    map_zoom_level = blocks.CharBlock(default=14,required=True,max_length=3)
+ 
+    class Meta:
+        template = 'yourapp/blocks/google_map.html'
+        icon = 'cogs'
+        label = 'Google Map'
+
+class RecomendBlock(blocks.StructBlock):
+    image = ImageChooserBlock()
+    caption = blocks.TextBlock(required=False)
+ 
+    class Meta:
+        icon = 'image'
+from django.contrib.auth.models import AbstractUser
+class User(AbstractUser):
+    class Meta:
+        verbose_name = "Пользователь"
+
+# ('image_carousel', blocks.ListBlock(ImageCarouselBlock(),template='yourapp/blocks/carousel.html',icon="image")),
 class PersonalIndexPage(Page):
     body = default_body 
     # subpage_types = ['core.Persona']
@@ -99,8 +130,10 @@ PersonalIndexPage.content_panels = [
 class Comment(models.Model):
     user = models.ForeignKey(User)
     text = models.TextField("Текст")
+    published = models.BooleanField("Опубликовать", default=False)
     date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     class Meta:
+        verbose_name = "Отзыв"
         verbose_name = "Отзыв"
 
 
@@ -117,23 +150,22 @@ class HomePage(Page):
         on_delete=models.SET_NULL,
         related_name='+'
     )
-    body = StreamField(
-            [
-        ('heading', blocks.CharBlock(classname="full title")),
-        ('paragraph', blocks.RichTextBlock()),
-        ('image', ImageChooserBlock()),
-    ],
-
-            verbose_name="Тело",
-            default=""
-
-            )
+    body = default_body
+    personal_page = models.ForeignKey(
+        'wagtailcore.Page',
+        related_name='+',
+        verbose_name=_("Page"),
+        on_delete=models.SET_NULL, 
+        null=True
+    )
     class Meta:
         verbose_name = "Домашняя"
+        verbose_name_plural = "Домашняя"
 
 HomePage.content_panels = [
     FieldPanel('title', classname="full title"),
     StreamFieldPanel('body'),
+    PageChooserPanel('service_page', 'core.PersonalIndexPage'),
     EmbedVideoChooserPanel('video'),
     ]
 
