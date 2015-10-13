@@ -2,46 +2,73 @@
 {% load static core_tags %}
 {% block body_class %}template-{{ self.get_verbose_name|slugify }}{% endblock %}
 {% block content %}
-<div class="top_header">
+
+<section id="mainPromo">
+    <div class="container mainPromo">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="mainPromo__small">
+
+                </div>
+                <div class="mainPromo__small">
+
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="mainPromo__large">
+
+                </div>
+            </div>
+        </div>
+    </div>          
+</section>
+<section id="mainContent">
     <div class="container">
-        <ul class="">
-            <li class="active"><a href="#">Главная</a></li>
-            <li><a href="#about">Услуги</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="mainContent__review">
+                    <span class="mainContent__review-inConer">Отзыв</span>
+                    <div class="mainContent__review-content">
+                        <h3>lorem</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, accusamus?</p>
+                        <p class="text-center"><a href="#">Читать все отзывы</a> / <a href="#">Добавить отзыв</a></p>
+                    </div>                  
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="mainContent__video">
+                    <div class="mainContent__video-video">
+                        <div class="embed-responsive embed-responsive-4by3">
+                            <iframe width="560" height="315" src="https://www.youtube.com/embed/MasbOjSyhTc" frameborder="0" allowfullscreen></iframe>                      
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="mainContent__about">
+                    <div class="mainContent__about-content">
 
-        <ul class="nav nav">
-            <li><a href="#login">Вход</a></li>
-            <li><a href=" {% url 'registration_register' %} ">Регистрация</a></li>
-        </ul>
+                        <h3>lorem</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, accusamus?Lorem ipsum dolor sit amet.</p>
+                        <p class="text-center"><a href="#">Узнать больше</a></p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="mainContent__text">
+                    <div class="mainContent__text-content">
+                        <h2 class="text-center text-uppercase">header</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est voluptates laboriosam maiores, ullam cupiditate vel earum commodi culpa, atque id blanditiis quod amet quos placeat. Consequatur perferendis eaque hic optio pariatur inventore. Laboriosam quis eos rem, eum quos laudantium, sit deleniti. Quam ex aliquam odio, eius corporis illo excepturi nulla.</p>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
-<div class="container">
-	<div class="row-fluid">
-        fluid
-    </div>
-</div>
-
-<div class="hero-unit">
-	<div class="container">
-		<h1>Learn Geometry</h1>
-		<p class="lead">Oat cake chocolate cake sugar plum sesame snaps. Bonbon danish oat cake chupa chups tart muffin tootsie roll sweet roll sweet roll.</p>
-		<p><a href="#" class="btn btn-success btn-large">Get Started</a></p>
-	</div>
-</div>
-<div class="container">
-	<div class="row-fluid">
-		<div class="span8">
-		</div>
-		<div class="span4">
-		</div>
-	</div>
-</div>
-
-<footer class="footer">
-      <div class="container">
-        <p class="text-muted">Place sticky footer content here.</p>
-      </div>
-    </footer>
 {% endblock %}
