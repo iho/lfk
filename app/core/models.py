@@ -63,6 +63,15 @@ class Personal(models.Model):
 
 
 
+class RecomendBlock(blocks.StructBlock):
+    image = ImageChooserBlock()
+    page = PageChooserBlock()
+    caption = blocks.RichTextBlock(required=False)
+ 
+    class Meta:
+        icon = 'cogs'
+
+
 default_body =  StreamField(
             [
         ('heading', blocks.CharBlock(classname="full title")),
@@ -88,13 +97,6 @@ class GoogleMapBlock(blocks.StructBlock):
         template = 'yourapp/blocks/google_map.html'
         icon = 'cogs'
         label = 'Google Map'
-
-class RecomendBlock(blocks.StructBlock):
-    image = ImageChooserBlock()
-    caption = blocks.TextBlock(required=False)
- 
-    class Meta:
-        icon = 'image'
 from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     class Meta:
@@ -158,6 +160,17 @@ class HomePage(Page):
         on_delete=models.SET_NULL, 
         null=True
     )
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request,  *args, **kwargs)
+        action = Action.objects.filter(active=True)[:2]
+        if len(action) > 0:
+            context['action_0'] = action[0]
+        if len(action) > 1:
+            context['action_1'] = action[1]
+        return context 
+
+
     class Meta:
         verbose_name = "Домашняя"
         verbose_name_plural = "Домашняя"
@@ -217,6 +230,7 @@ class ServicePage(Page):
     body = default_body 
     # parent_page_types = ['core.ServiceIndexPage']
     parent_page_types = ['core.ServiceIndexPage']
+
     class Meta:
         verbose_name = "Услуга"
         verbose_name_plural = "Услуги"
@@ -225,6 +239,42 @@ class ServicePage(Page):
 
 ServicePage.content_panels = [
     FieldPanel('title', classname="full title"),
+    StreamFieldPanel('body'),
+    ]
+
+
+class Action(Page):
+    active = models.BooleanField("Активная", default=True)
+    body = StreamField(
+            [
+        ('heading', blocks.CharBlock(classname="full title")),
+        ('paragraph', blocks.RichTextBlock()),
+        ('image', ImageChooserBlock()),
+    ],
+
+            verbose_name="Тело",
+            default=""
+
+            )
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+', 
+        verbose_name = "Акция"
+    )
+    short_text = RichTextField('Краткое описание акции', null=True) 
+    template = "core/licenses.html"
+    class Meta:
+        verbose_name = "Акция"
+        verbose_name_plural = "Акции"
+
+Action.content_panels = [
+    FieldPanel('title', classname="full title"),
+    FieldPanel('active'),
+    FieldPanel('short_text'),
+    ImageChooserPanel('image'),
     StreamFieldPanel('body'),
     ]
 

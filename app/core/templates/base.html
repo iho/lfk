@@ -44,9 +44,10 @@
                     </div>
                     <div class="col-md-3 text-right">
                         <span class="mainNavbar__registration">
-                            <a href=""> Вход </a>
+                            <a href="{% url 'auth_login'%}"> Вход </a>
+
                             /
-                            <a href=""> Регистрация </a>
+                            <a href="{% url 'registration_register' %}"> Регистрация </a>
                         </span>
                     </div>
                   </div>
@@ -77,7 +78,10 @@
     <footer>
         <div class="container">
             <div class="row">
-                <div class="col-sm-3">Copyright</div>
+                <div class="col-sm-3">
+                    Реабилитационный центр 
+&#169 {% now "Y" %} Массаж
+                </div>
                 <div class="col-sm-7 aboutList">
                   <ul class="list-unstyled">
                     О нас
@@ -87,7 +91,7 @@
                   </ul>    
                 </div>
                 <div class="col-sm-2">
-                    <a href="#">Lorem ipsum dolor sit amet.</a>
+                    <a href="http://www.pd-s.ru" onclick="return !window.open(this.href)">Создание сайта под ключ</a>
                 </div>
             </div>
         </div>

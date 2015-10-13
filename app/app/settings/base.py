@@ -63,6 +63,8 @@ INSTALLED_APPS = (
     'registration', 
     'embed_video',
     'wagtail_embed_videos',
+    'bootstrap3',
+
 )
 
 MIDDLEWARE_CLASSES = (

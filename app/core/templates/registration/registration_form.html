@@ -9,7 +9,7 @@
     {% csrf_token %}
     {# {{ form.as_p }} #}
     {% bootstrap_form form %}
-    <button type="submit">{% trans 'Submit' %}" </button>
+    <button  class="btn btn-primary" type="submit">{% trans 'Submit' %} </button>
 </form>
 {% endblock %}
 

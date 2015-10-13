@@ -15,8 +15,9 @@ Unidecode==0.4.18
 wagtail==1.1
 wheel==0.26.0
 Willow==0.2.1
-django-registration-redux==1.2
+# django-registration-redux==1.2
 django-bootstrap3==6.2.2
--e git+https://github.com/SalahAdDin/wagtail-embedvideos.git#egg=wagtail_embed_videos
+-e git+https://github.com/iho/wagtail-embedvideos.git#egg=wagtail_embed_videos
 django-embed-video==1.0.0
 urllib3
+-e git+https://github.com/iho/django-registration.git@117b1915eb3f29eb000a92183272f119843e6ca8#egg=django-registration-redux
