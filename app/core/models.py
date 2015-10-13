@@ -105,7 +105,18 @@ class Comment(models.Model):
 
 
 
+from embed_video.fields import EmbedVideoField
+
+from wagtail_embed_videos.edit_handlers import EmbedVideoChooserPanel
 class HomePage(Page):
+    video = models.ForeignKey(
+        'wagtail_embed_videos.EmbedVideo',
+        verbose_name="Video",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
     body = StreamField(
             [
         ('heading', blocks.CharBlock(classname="full title")),
@@ -123,6 +134,7 @@ class HomePage(Page):
 HomePage.content_panels = [
     FieldPanel('title', classname="full title"),
     StreamFieldPanel('body'),
+    EmbedVideoChooserPanel('video'),
     ]
 
 

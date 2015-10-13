@@ -1,5 +1,6 @@
 # My ignore 
 local.py
+media/
 *.pyc
 *.pyo
 *.db

@@ -60,7 +60,9 @@ INSTALLED_APPS = (
     'wagtail.wagtailforms',
 
     'core',
-'registration', 
+    'registration', 
+    'embed_video',
+    'wagtail_embed_videos',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static core_tags %}
+{% load embed_video_tags %}
 {% block body_class %}template-{{ self.get_verbose_name|slugify }}{% endblock %}
 {% block content %}
 
@@ -39,7 +40,7 @@
                 <div class="mainContent__video">
                     <div class="mainContent__video-video">
                         <div class="embed-responsive embed-responsive-4by3">
-                            <iframe width="560" height="315" src="https://www.youtube.com/embed/MasbOjSyhTc" frameborder="0" allowfullscreen></iframe>                      
+                            {% video self.video.url '560x315' %}
                         </div>
                     </div>
                 </div>
