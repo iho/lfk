@@ -21,7 +21,7 @@ run:
 
 .PHONY: deploy
 deploy:
-	tar -cf /tmp/deploy.tar app requirements --exclude='app/app/settings/local.py' --exclude='app/db.sqlite3'
+	tar -cf /tmp/deploy.tar app requirements --exclude='app/app/settings/local.py' --exclude='app/db.sqlite3' --exclude=='app/media'
 	ansible-playbook deploy/beget.yml --tags="deploy"
 	rm -rf /tmp/deploy.tar
 

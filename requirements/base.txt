@@ -19,3 +19,4 @@ django-registration-redux==1.2
 django-bootstrap3==6.2.2
 -e git+https://github.com/SalahAdDin/wagtail-embedvideos.git#egg=wagtail_embed_videos
 django-embed-video==1.0.0
+urllib3
