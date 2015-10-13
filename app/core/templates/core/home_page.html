@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static core_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 {% load embed_video_tags %}
 {% block body_class %}template-{{ self.get_verbose_name|slugify }}{% endblock %}
 {% block content %}
@@ -61,9 +62,7 @@
             <div class="col-sm-12">
                 <div class="mainContent__text">
                     <div class="mainContent__text-content">
-                        <h2 class="text-center text-uppercase">header</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est voluptates laboriosam maiores, ullam cupiditate vel earum commodi culpa, atque id blanditiis quod amet quos placeat. Consequatur perferendis eaque hic optio pariatur inventore. Laboriosam quis eos rem, eum quos laudantium, sit deleniti. Quam ex aliquam odio, eius corporis illo excepturi nulla.</p>
-
+                        {% include "core/includes/streamfield.html" with content=self.body %}
                     </div>
 
                 </div>

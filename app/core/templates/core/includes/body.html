@@ -1,0 +1,15 @@
+{% load wagtailcore_tags %}
+
+{% if content %}
+    {% for child in content %}
+        {% if child.block_type == 'heading' %}
+            <h1>{{ block.value }}</h1>
+        {% elif child.block_type == 'paragraph' %}
+            {{ child.value|richtext }}
+        {% else %}
+            <section class="block-{{ child.block_type }}">
+                {{ child }}
+            </section>
+        {% endif %}
+    {% endfor %}
+{% endif %}
