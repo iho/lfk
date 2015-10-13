@@ -36,6 +36,7 @@ BASE_URL = 'http://example.com'
 # Application definition
 
 INSTALLED_APPS = (
+    'core',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -59,7 +60,6 @@ INSTALLED_APPS = (
     'wagtail.wagtailredirects',
     'wagtail.wagtailforms',
 
-    'core',
     'registration', 
     'embed_video',
     'wagtail_embed_videos',
