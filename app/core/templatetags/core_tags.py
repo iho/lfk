@@ -1,5 +1,5 @@
 from datetime import date
-from django import template
+from django import template 
 from django.conf import settings
 
 from core.models import  Page, Social, HomePage
@@ -26,8 +26,11 @@ def has_menu_children(page):
 @register.inclusion_tag('core/tags/top_menu.html', takes_context=True)
 def top_menu(context, parent, calling_page=None):
     # menuitems = parent.get_children().live().in_menu()
+    if not calling_page:
+        calling_page_id = 0
+    else:
+        calling_page_id = calling_page.id
 
-    # import ipdb; ipdb.set_trace()
     menuitems = parent.top_menu.all()
     menuitems = [menuitem.link_page for menuitem in menuitems]
     for menuitem in menuitems:
@@ -35,7 +38,7 @@ def top_menu(context, parent, calling_page=None):
         # We don't directly check if calling_page is None since the template
         # engine can pass an empty string to calling_page
         # if the variable passed as calling_page does not exist.
-        menuitem.active = menuitem.id == calling_page.id
+        menuitem.active = menuitem.id == calling_page_id
     menuitems = [menuitem for menuitem in menuitems if menuitem.show_in_menus]
 
     ftems = parent.footer_menu.all()
@@ -69,6 +72,8 @@ def standard_index_listing(context, calling_page):
 @register.inclusion_tag('core/tags/breadcrumbs.html', takes_context=True)
 def breadcrumbs(context):
     self = context.get('self')
+    root = context.get('site_root')
+    root.title = "Главная"
     if self is None or self.depth <= 2:
         # When on the home page, displaying breadcrumbs is irrelevant.
         ancestors = ()
@@ -76,7 +81,7 @@ def breadcrumbs(context):
         # ancestors = self.get_ancestors()
         ancestors = Page.objects.ancestor_of(
             self, inclusive=True).filter(depth__gt=2)
-        print(ancestors)
+        ancestors = (root,) +tuple(ancestors)
 
  
     # import ipdb; ipdb.set_trace()

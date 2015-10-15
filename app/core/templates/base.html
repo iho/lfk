@@ -72,9 +72,13 @@
           </div>
         </section>
 
-
-    {#    {% wagtailuserbar %} #}
-    {% block content %}{% endblock %}
+<section id="mainContent">
+    <div class="container">
+        <div class="row">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</section>
 
     </div>
     <footer>

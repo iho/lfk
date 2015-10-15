@@ -29,6 +29,8 @@ from wagtail.wagtailcore.blocks import PageChooserBlock
 
 from wagtail.wagtailsnippets.blocks import SnippetChooserBlock
 
+
+
 from wagtail.wagtailcore.blocks import ListBlock
 
 @register_snippet
@@ -330,6 +332,24 @@ class Comments(Page):
         comments = Comment.objects.filter(published=True)
         context['comments'] = comments
         return context
+    def serve(self, request):
+        if request.method == 'POST':
+            form = CommentForm(request.POST)
+
+            if form.is_valid():
+                inst = form.save()
+# send message
+                return render(request, self.template, {
+                    'self': self,
+                })
+        else:
+            form = self.get_form()
+
+        return render(request, self.template, {
+            'self': self,
+            'form': form,
+        })
+
 
     class Meta:
         verbose_name = "Коментарии"
@@ -363,7 +383,7 @@ max_length=80
 
     class Meta:
         verbose_name = "Телефон"
-        verbose_name_plural = "Телефони"
+        verbose_name_plural = "Телефоны"
 
 
 
