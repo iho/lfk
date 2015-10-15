@@ -2,7 +2,7 @@ from datetime import date
 from django import template
 from django.conf import settings
 
-from core.models import  Page
+from core.models import  Page, Social, HomePage
 
 register = template.Library()
 
@@ -11,7 +11,9 @@ register = template.Library()
 def get_site_root(context):
     # NB this returns a core.Page, not the implementation-specific model used
     # so object-comparison to self will return false as objects would differ
-    return context['request'].site.root_page
+    parent = context['request'].site.root_page
+    parent = HomePage.objects.get(id=parent.id)
+    return parent 
 
 
 def has_menu_children(page):
@@ -23,36 +25,30 @@ def has_menu_children(page):
 # a dropdown class to be applied to a parent
 @register.inclusion_tag('core/tags/top_menu.html', takes_context=True)
 def top_menu(context, parent, calling_page=None):
-    menuitems = parent.get_children().live().in_menu()
+    # menuitems = parent.get_children().live().in_menu()
+
+    # import ipdb; ipdb.set_trace()
+    menuitems = parent.top_menu.all()
+    menuitems = [menuitem.link_page for menuitem in menuitems]
     for menuitem in menuitems:
-        menuitem.show_dropdown = has_menu_children(menuitem)
+        # menuitem.show_dropdown = has_menu_children(menuitem)
         # We don't directly check if calling_page is None since the template
         # engine can pass an empty string to calling_page
         # if the variable passed as calling_page does not exist.
-        menuitem.active = (calling_page.url.startswith(menuitem.url)
-                           if calling_page else False)
-
+        menuitem.active = menuitem.id == calling_page.id
     menuitems = [menuitem for menuitem in menuitems if menuitem.show_in_menus]
+
+    ftems = parent.footer_menu.all()
+    ftems = [menuitem.link_page for menuitem in ftems]
+    ftems = [menuitem for menuitem in ftems if menuitem.show_in_menus]
+
+    context['footer_items'] = ftems
+    context['telephon'] = Social.objects.first()
     return {
         'calling_page': calling_page,
         'menuitems': menuitems,
-        # required by the pageurl tag that we want to use within this template
         'request': context['request'],
     }
-
-
-# Retrieves the children of the top menu items for the drop downs
-@register.inclusion_tag('core/tags/top_menu_children.html', takes_context=True)
-def top_menu_children(context, parent):
-    menuitems_children = parent.get_children()
-    menuitems_children = menuitems_children.live().in_menu()
-    return {
-        'parent': parent,
-        'menuitems_children': menuitems_children,
-        # required by the pageurl tag that we want to use within this template
-        'request': context['request'],
-    }
-
 
 # Retrieves all live pages which are children of the calling page
 #for standard index listing
@@ -77,8 +73,14 @@ def breadcrumbs(context):
         # When on the home page, displaying breadcrumbs is irrelevant.
         ancestors = ()
     else:
+        # ancestors = self.get_ancestors()
         ancestors = Page.objects.ancestor_of(
             self, inclusive=True).filter(depth__gt=2)
+        print(ancestors)
+
+ 
+    # import ipdb; ipdb.set_trace()
+
     return {
         'ancestors': ancestors,
         'request': context['request'],

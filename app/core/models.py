@@ -143,6 +143,31 @@ class Comment(models.Model):
 from embed_video.fields import EmbedVideoField
 
 from wagtail_embed_videos.edit_handlers import EmbedVideoChooserPanel
+class MenuItem(models.Model):
+    link_page = models.ForeignKey(
+        'wagtailcore.Page',
+        null=True,
+        blank=True,
+        related_name='+',
+        verbose_name=_("Page")
+    )
+class HomeTopMenuItem(Orderable, MenuItem):
+    page = ParentalKey('core.HomePage', related_name='top_menu', verbose_name=_('Page'))
+
+    class Meta:
+        verbose_name = _("HomePageServiceItem")
+        verbose_name_plural = _('HomePageServiceItems')
+
+class HomeFooterMenuItem(Orderable, MenuItem):
+    page = ParentalKey('core.HomePage', related_name='footer_menu', verbose_name=_('Page'))
+
+    class Meta:
+        verbose_name = _("HomePageServiceItem")
+        verbose_name_plural = _('HomePageServiceItems')
+
+
+
+
 class HomePage(Page):
     video = models.ForeignKey(
         'wagtail_embed_videos.EmbedVideo',
@@ -156,10 +181,24 @@ class HomePage(Page):
     personal_page = models.ForeignKey(
         'wagtailcore.Page',
         related_name='+',
-        verbose_name=_("Page"),
+        verbose_name="Страница персонала",
         on_delete=models.SET_NULL, 
-        null=True
+        null=True,
+        blank=True
+
+
     )
+    comments_page = models.ForeignKey(
+        'wagtailcore.Page',
+        related_name='+',
+        verbose_name="Страница отзывов",
+        on_delete=models.SET_NULL, 
+        null=True,
+        blank=True
+
+    )
+
+
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request,  *args, **kwargs)
@@ -178,9 +217,12 @@ class HomePage(Page):
 HomePage.content_panels = [
     FieldPanel('title', classname="full title"),
     StreamFieldPanel('body'),
-    PageChooserPanel('service_page', 'core.PersonalIndexPage'),
+    InlinePanel('top_menu', label="Верхнее меню"),
+    InlinePanel('footer_menu', label="Нижнее меню"),
+    PageChooserPanel('personal_page', 'core.PersonalIndexPage'),
+    PageChooserPanel('comments_page', 'core.Comments'),
     EmbedVideoChooserPanel('video'),
-    ]
+]
 
 
 
@@ -278,4 +320,51 @@ Action.content_panels = [
     StreamFieldPanel('body'),
     ]
 
+from core.forms import CommentForm
+class Comments(Page):
 
+    body = default_body 
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request,  *args, **kwargs)
+        comments = Comment.objects.filter(published=True)
+        context['comments'] = comments
+        return context
+
+    class Meta:
+        verbose_name = "Коментарии"
+        verbose_name_plural = "Коментарии"
+
+
+
+Comments.content_panels = [
+    FieldPanel('title', classname="full title"),
+    StreamFieldPanel('body'),
+    ]
+
+
+
+class Social(models.Model):
+    number = models.CharField('Телефон', blank=True, 
+max_length=80
+            )
+    body = models.CharField("Тело", blank=True,
+
+max_length=80
+            )
+
+    panels = [
+        FieldPanel('body'),
+        FieldPanel('number'),
+    ]
+
+    def __str__(self):
+        return self.body
+
+    class Meta:
+        verbose_name = "Телефон"
+        verbose_name_plural = "Телефони"
+
+
+
+register_snippet(Social)

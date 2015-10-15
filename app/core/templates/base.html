@@ -1,4 +1,5 @@
 {% load compress static wagtailuserbar %}
+{% load static core_tags wagtailcore_tags wagtailimages_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,7 +28,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-
+{% get_site_root as site_root %}
 <body class="{% block body_class %}{% endblock %}">
     <div class="wrap">
         <section id="mainNavbar">
@@ -36,11 +37,8 @@
                   <div class="col-md-12">
                     <div class="col-md-5 col-md-offset-4">
                         <ul class="nav nav-pills">              
-                          <li role="presentation" class="mainNavbar__item"><a href="#">Главная</a></li>
-                          <li role="presentation"><a href="#">Услуги</a></li>
-                          <li role="presentation"><a href="#">О нас</a></li>
-                          <li role="presentation"><a href="#">Контакты</a></li>
-                        </ul>
+                         {% top_menu parent=site_root calling_page=self %}
+                         </ul>
                     </div>
                     <div class="col-md-3 text-right">
                         <span class="mainNavbar__registration">
@@ -63,8 +61,12 @@
                 <img src="/static/img/logo_header.png">
               </div>
               <div class="col-sm-9 text-right">
-                <p class="mainHeader__phone">8 (000) 000-00-00</p>
-                <p class="mainHeader__text">Lorem ipsum dolor sit amet.</p>
+                <p class="mainHeader__phone">
+                  {{ telephon.number }} 
+                </p>
+                <p class="mainHeader__text">
+                  {{ telephon.body }} 
+                </p>
               </div>
             </div>
           </div>
@@ -85,9 +87,9 @@
                 <div class="col-sm-7 aboutList">
                   <ul class="list-unstyled">
                     О нас
-                    <li><a href="#">Лицензии</a></li>
-                    <li><a href="#">Персонал</a></li>
-                    <li><a href="#">Видео</a></li>
+                    {% for item in footer_items %}
+                        <li><a href="{% pageurl item %}">{{ item.title }}</a> </li>
+                    {% endfor %}
                   </ul>    
                 </div>
                 <div class="col-sm-2">
