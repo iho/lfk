@@ -297,7 +297,7 @@ class ServiceIndexPage(Page):
     body = recomend_block_default
     @property
     def services(self):
-        services = ServicePage.objects.live().descendant_of(self)
+        services = ServicePage.objects.all()
         return services
 
     template = "core/services.html"
@@ -316,11 +316,13 @@ class ServicePage(Page):
     body = recomend_block_default
     # parent_page_types = ['core.ServiceIndexPage']
     parent_page_types = ['core.ServiceIndexPage']
+
     @property
     def services(self):
-        services = ServicePage.objects.live().descendant_of(self)
+        services = ServicePage.objects.all()
         return services
 
+    template = "core/services.html"
 
     class Meta:
         verbose_name = "Услуга"
