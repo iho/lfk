@@ -13,14 +13,14 @@
                        {{ action_0.short_text|richtext }}
                        {% image action_0.image fill-300x200 as image %}
 
-                       <img src="{{ image.url }}">
+                       <img src="{{ image.url }}"  class="img-responsive">
                     {% endif %}
                 </div>
                 <div class="mainPromo__small">
                     {% if action_1 %}
                        {{ action_1.short_text|richtext }}
                        {% image action_1.image fill-300x200 as image %}
-                       <img src="{{ image.url }}">
+                       <img src="{{ image.url }}"  class="img-responsive">
                     {% endif %}
                 </div>
             </div>

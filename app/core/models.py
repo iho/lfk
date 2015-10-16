@@ -65,13 +65,56 @@ class Personal(models.Model):
 
 
 
+from wagtail.wagtailcore.blocks import ListBlock
 class RecomendBlock(blocks.StructBlock):
-    image = ImageChooserBlock()
-    page = PageChooserBlock()
-    caption = blocks.RichTextBlock(required=False)
+    image = ImageChooserBlock("Превью страниц")
+    page = PageChooserBlock("Страница")
+    short_text = blocks.RichTextBlock("Краткое описания")
  
     class Meta:
         icon = 'cogs'
+
+from django.template.loader import render_to_string
+
+from wagtail.wagtailcore.models import Site
+class custom_list_block(blocks.ListBlock): 
+
+    def render(self, value, extra_context=None):
+        """
+        Return a text rendering of 'value', suitable for display on templates. By default, this will
+        use a template if a 'template' property is specified on the block, and fall back on render_basic
+        otherwise.
+        """
+        template = getattr(self.meta, 'template', None)
+        class f():
+            site = Site.objects.first() 
+        if template:
+            context = {
+                'self': value,
+                self.TEMPLATE_VAR: value,
+                'request': f() 
+            }
+            context.update(extra_context or {})
+            return render_to_string(template, context)
+        else:
+            return self.render_basic(value)
+
+
+recomend_block_default = StreamField(
+            [
+        ('heading', blocks.CharBlock(classname="full title")),
+        ('paragraph', blocks.RichTextBlock()),
+        ('image', ImageChooserBlock()),
+        ('recomend', custom_list_block(RecomendBlock(), template='blocks/recomend_block.html'))
+ 
+    ], 
+
+            verbose_name="Тело",
+            default=""
+
+            )
+
+
 
 
 default_body =  StreamField(
@@ -248,11 +291,10 @@ License.content_panels = [
     FieldPanel('title', classname="full title"),
     StreamFieldPanel('body'),
     ]
-
 class ServiceIndexPage(Page):
-    body = default_body 
     subpage_types = ['core.ServicePage']
-
+    # second_body = default_body
+    body = recomend_block_default
     @property
     def services(self):
         services = ServicePage.objects.live().descendant_of(self)
@@ -271,9 +313,14 @@ ServiceIndexPage.content_panels = [
 
 
 class ServicePage(Page):
-    body = default_body 
+    body = recomend_block_default
     # parent_page_types = ['core.ServiceIndexPage']
     parent_page_types = ['core.ServiceIndexPage']
+    @property
+    def services(self):
+        services = ServicePage.objects.live().descendant_of(self)
+        return services
+
 
     class Meta:
         verbose_name = "Услуга"
@@ -322,7 +369,6 @@ Action.content_panels = [
     StreamFieldPanel('body'),
     ]
 
-from core.forms import CommentForm
 class Comments(Page):
 
     body = default_body 
@@ -332,7 +378,9 @@ class Comments(Page):
         comments = Comment.objects.filter(published=True)
         context['comments'] = comments
         return context
+
     def serve(self, request):
+        from core.forms import CommentForm
         if request.method == 'POST':
             form = CommentForm(request.POST)
 

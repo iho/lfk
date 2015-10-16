@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static core_tags %}
+{% load compress static wagtailuserbar %}
+{% load static core_tags wagtailcore_tags wagtailimages_tags %}
 {% block body_class %}template-{{ self.get_verbose_name|slugify }}{% endblock %}
 {% block content %}
 <section id="services">
@@ -13,9 +15,15 @@
                     </div>
                     <div class="col-sm-2">
                         <div class="services__links">
-                            <p><a href="#">lorem</a></p>
-                            <p><a href="#">lorem</a></p>
-                            <p><a href="#">lorem</a></p>
+{% for item in self.services %}
+{% if item.id == self.id %}
+<h1> {{ item.title }} </h1>   
+{% else %}
+    
+<p><a href="{% pageurl item %}">{{ item.title }}</a> </p>
+{% endif %}
+
+{% endfor %}
                         </div>
                     </div>
                     <div class="col-sm-10 ">
@@ -26,26 +34,11 @@
                                     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias enim in nisi esse laudantium labore, qui, id inventore consequatur. Consequuntur itaque quibusdam a quos aspernatur ratione amet vitae ipsum modi.</p>
                                 </div>
                             </div>
-                            <div class="row services__content-service text-center">
-                              <div class="col-sm-4">
-                                <img src="img/img1.jpg" class="img-responsive">
-                                <a href="#">Lorem ipsum.</a>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatum, laudantium?</p>
-                              </div>
-                              <div class="col-sm-4">
-                                <img src="img/img1.jpg" class="img-responsive">
-                                <a href="#">Lorem ipsum.</a>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatum, laudantium?</p>
-                              </div>
-                              <div class="col-sm-4">
-                                <img src="img/img1.jpg" class="img-responsive">
-                                <a href="#">Lorem ipsum.</a>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatum, laudantium?</p>
-                              </div>
-                            </div>
+
+                        {% include "core/includes/streamfield.html" with content=self.body %}
                             <div class="row services__content-secondText">
-                              <div class="col-sm-12">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia amet molestias expedita repellendus ratione. Incidunt fuga dignissimos saepe laborum autem, quam, officia odit odio asperiores architecto voluptates expedita, praesentium quisquam aperiam, quos quas possimus impedit iste maiores optio natus quae similique sunt tempora provident. Iure facere eos obcaecati, excepturi blanditiis.</p>
+                              <div class="col-sm-12"> 
+                                  {% include "core/includes/streamfield.html" with content=self.second_body %}
                               </div>
                             </div>
                         </div>
