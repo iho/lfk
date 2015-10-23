@@ -152,7 +152,8 @@ class PersonalIndexPage(Page):
     body = default_body 
     # subpage_types = ['core.Persona']
 
-    template = "core/personal.html"
+    # template = "core/personal.html"
+    template = "core/licenses.html"
     # @property
     # def services(self):
     #     services = Personal.objects.live().descendant_of(self)
@@ -283,7 +284,8 @@ class License(Page):
             default=""
 
             )
-    template = "core/licenses.html"
+    # template = "core/licenses.html"
+    template = "core/default.html"
     class Meta:
         verbose_name = "Лицензия"
 
@@ -358,7 +360,7 @@ class Action(Page):
         verbose_name = "Акция"
     )
     short_text = RichTextField('Краткое описание акции', null=True) 
-    template = "core/licenses.html"
+    template = "core/default.html"
     class Meta:
         verbose_name = "Акция"
         verbose_name_plural = "Акции"

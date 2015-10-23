@@ -5,7 +5,7 @@
 {% for item in self %}
 <div class="col-sm-4">
 
-{% image item.image width-400 as tmp_photo %}
+{% image item.image  max-400x300 as tmp_photo %}
     <img src="{{ tmp_photo.url }}" class="img-responsive">
     <a href="{% pageurl item.page %}"> {{ item.page.title }} </a>
     <p> {{ item.short_text }} 
