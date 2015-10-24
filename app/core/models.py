@@ -36,14 +36,9 @@ from wagtail.wagtailcore.blocks import ListBlock
 class Personal(models.Model):
     fio = models.CharField("ФИО", max_length=255, blank=True)
     text = models.TextField("Текст",  blank=True)
-    age = models.IntegerField("Возраст", blank=True, default=0)
     position = models.CharField("Должность", max_length=255, blank=True)
-    male =  models.BooleanField("Пол", 
-            default=True,
-
-choices=[(True, 'Мужчина'), (False, 'Женщина')])
-            
-    # image = ImageField(upload_to="Image")
+           
+    image = models.ImageField(upload_to="personal_avatars", null=True)
     # image = models.ForeignKey(
     #     'wagtailimages.Image',
     #     null=True,
@@ -149,6 +144,12 @@ class GoogleMapBlock(blocks.StructBlock):
         label = 'Google Map'
 from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
+    age = models.IntegerField("Возраст", blank=True, default=0)
+    male =  models.BooleanField("Пол", 
+            default=True,
+
+choices=[(True, 'Мужчина'), (False, 'Женщина')])
+ 
     class Meta:
         verbose_name = "Пользователь"
 
@@ -401,15 +402,15 @@ Action.content_panels = [
     ImageChooserPanel('image'),
     StreamFieldPanel('body'),
     ]
-
+from django.shortcuts import render
 class Comments(Page):
 
     body = default_body 
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request,  *args, **kwargs)
-        comments = Comment.objects.filter(published=True)
-        context['comments'] = comments
+        # comments = Comment.objects.filter(published=True)
+        # context['comments'] = comments
         return context
 
     def serve(self, request):

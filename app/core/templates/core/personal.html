@@ -30,19 +30,16 @@
                                </div>
                             </div>
                             
-                            <div class="row personal__content-text">
+                            <div class="row">
             {% for pers in personals %}
 
-            {% if pers.age < 18 %}
-                <img src="/static/img/child.png" class="img-responsive">
-            {% elif pers.male %}
-                <img src="/static/img/men.png" class="img-responsive">
-            {% else %}
-                <img src="/static/img/women.png" class="img-responsive">
-            {% endif %}
+                                <div class="col-sm-12 personal__content-service">
+            <img src="{{ pers.image.url }}" class="img-responsive">
             <h4> {{ pers.fio }} </h4>
             <p> {{ pers.position }} </p>
             <p> {{ pers.text }} </p>
+
+                            </div>
         {% endfor %}
                             </div>
 
