@@ -1,16 +1,57 @@
 {% extends "base.html" %}
 {% load static core_tags %}
+{% load static core_tags wagtailcore_tags wagtailimages_tags %}
 {% block body_class %}template-{{ self.get_verbose_name|slugify }}{% endblock %}
 {% block content %}
-Персонал
+ <section id="services">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-10 col-xs-offset-2">
+                        <section id="breadcrumbs">
+                            {% breadcrumbs %}
+                         </section>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="services__links">
+                            {% for item in services %}
+                                {% if item.id == self.id %}
+                                    <h1> {{ item.title }} </h1>   
+                                {% else %}
+                                    <p><a href="{% pageurl item %}">{{ item.title }}</a> </p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-sm-10 ">
+                        <div class="about__content">
+                            <div class="row personal__content-text">
+                                <div class="col-sm-12">
+                                    {% include "core/includes/streamfield.html" with content=self.body %}
+                               </div>
+                            </div>
+                            
+                            <div class="row personal__content-text">
+            {% for pers in personals %}
 
-{% for pers in personals %}
-<p>
-    {{ pers.first_name }}
-    {{ pers.last_name }}
-    {{ pers.position }}
+            {% if pers.age < 18 %}
+                <img src="/static/img/child.png" class="img-responsive">
+            {% elif pers.male %}
+                <img src="/static/img/men.png" class="img-responsive">
+            {% else %}
+                <img src="/static/img/women.png" class="img-responsive">
+            {% endif %}
+            <h4> {{ pers.fio }} </h4>
+            <p> {{ pers.position }} </p>
+            <p> {{ pers.text }} </p>
+        {% endfor %}
+                            </div>
 
-</p>
-{% endfor %}
-    
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
 {% endblock %}

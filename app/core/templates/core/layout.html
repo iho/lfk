@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load static core_tags %}
 {% block body_class %}template-{{ self.get_verbose_name|slugify }}{% endblock %}
-{% block content %}
 <section id="services">
     <div class="container">
         <div class="row">
@@ -23,12 +22,16 @@
                         </div>
                     </div>
                     <div class="col-sm-10 ">
+
+{% block content %}
                         <div class="services__content">
                             <div class="row services__content-text">
                                 <div class="col-sm-12">
                                     {% include "core/includes/streamfield.html" with content=self.body %}
                                </div>
                             </div>
+
+{% endblock %}
                         </div>
                     </div>
 
@@ -39,4 +42,3 @@
 </section>
 
 
-{% endblock %}

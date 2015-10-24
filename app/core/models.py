@@ -32,12 +32,17 @@ from wagtail.wagtailsnippets.blocks import SnippetChooserBlock
 
 
 from wagtail.wagtailcore.blocks import ListBlock
-
 @register_snippet
 class Personal(models.Model):
-    first_name = models.CharField("Имя", max_length=255, blank=True)
-    last_name = models.CharField("Фамилия", max_length=255, blank=True)
+    fio = models.CharField("ФИО", max_length=255, blank=True)
+    text = models.TextField("Текст",  blank=True)
+    age = models.IntegerField("Возраст", blank=True, default=0)
     position = models.CharField("Должность", max_length=255, blank=True)
+    male =  models.BooleanField("Пол", 
+            default=True,
+
+choices=[(True, 'Мужчина'), (False, 'Женщина')])
+            
     # image = ImageField(upload_to="Image")
     # image = models.ForeignKey(
     #     'wagtailimages.Image',
@@ -50,7 +55,7 @@ class Personal(models.Model):
     # parent_page_types = ['core.PersonalIndexPage']
     # parent_page_types = []
     def __str__(self):
-        return self.first_name + " " + self.last_name
+        return self.fio
     class Meta:
         verbose_name = "Персонал"
         verbose_name_plural = "Персонал"
@@ -153,7 +158,7 @@ class PersonalIndexPage(Page):
     # subpage_types = ['core.Persona']
 
     # template = "core/personal.html"
-    template = "core/licenses.html"
+    template = "core/personal.html"
     # @property
     # def services(self):
     #     services = Personal.objects.live().descendant_of(self)
@@ -253,6 +258,7 @@ class HomePage(Page):
             context['action_0'] = action[0]
         if len(action) > 1:
             context['action_1'] = action[1]
+        context['comm'] = Comment.objects.first()
         return context 
 
 
@@ -269,6 +275,28 @@ HomePage.content_panels = [
     PageChooserPanel('comments_page', 'core.Comments'),
     EmbedVideoChooserPanel('video'),
 ]
+
+class DefaultPage(Page):
+    body = StreamField(
+            [
+        ('heading', blocks.CharBlock(classname="full title")),
+        ('paragraph', blocks.RichTextBlock()),
+        ('image', ImageChooserBlock()),
+    ],
+
+            verbose_name="Тело",
+            default=""
+
+            )
+    # template = "core/licenses.html"
+    template = "core/default.html"
+    class Meta:
+        verbose_name = "Обычная страница"
+
+DefaultPage.content_panels = [
+    FieldPanel('title', classname="full title"),
+    StreamFieldPanel('body'),
+    ]
 
 
 
@@ -293,6 +321,7 @@ License.content_panels = [
     FieldPanel('title', classname="full title"),
     StreamFieldPanel('body'),
     ]
+
 class ServiceIndexPage(Page):
     subpage_types = ['core.ServicePage']
     # second_body = default_body
@@ -395,7 +424,7 @@ class Comments(Page):
                     'self': self,
                 })
         else:
-            form = self.get_form()
+            form = CommentForm()
 
         return render(request, self.template, {
             'self': self,

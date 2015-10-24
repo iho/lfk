@@ -58,9 +58,21 @@ color: white;
                 <div class="mainContent__review">
                     <span class="mainContent__review-inConer">Отзыв</span>
                     <div class="mainContent__review-content">
-                        <h3>lorem</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, accusamus?</p>
-                        <p class="text-center"><a href="#">Читать все отзывы</a> / <a href="#">Добавить отзыв</a></p>
+                        {% if comm %}
+                        <h3> {{ comm.user.username }} </h3>
+                        <p>  {{ comm.text }} </p>
+                        {% endif %}
+
+                        <p class="text-center">
+                        {% if self.comments_page %}
+                        <a href="{% pageurl self.comments_page %}#">
+                            Читать все отзывы</a> 
+                        /                           
+                        <a href="{% pageurl self.comments_page %}#form">Добавить отзыв</a></p>
+                        {% else %}
+                            
+                        {% endif %}
+ 
                     </div>                  
                 </div>
             </div>
@@ -80,7 +92,10 @@ color: white;
                         <h3>Наши специалисты</h3>
                         <p>В нашем центре работают специалисты високого класса. За спиной у каждого
                         огромный опыт, дипломы, потверждающие его квалификацию и отзывы клиентов.</p>
-                        <p class="text-center"><a href="#">Узнать больше</a></p>
+                        <p class="text-center">
+                        {% if self.personal_page %}    
+                        <a href="{% pageurl self.personal_page %}">Узнать больше</a></p>
+                        {% endif %}
 
                     </div>
                 </div>

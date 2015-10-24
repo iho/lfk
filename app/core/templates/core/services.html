@@ -2,6 +2,7 @@
 {% load static core_tags %}
 {% load compress static wagtailuserbar %}
 {% load static core_tags wagtailcore_tags wagtailimages_tags %}
+
 {% block body_class %}template-{{ self.get_verbose_name|slugify }}{% endblock %}
 {% block content %}
 <section id="services">
@@ -9,21 +10,18 @@
                 <div class="row">
                     <div class="col-xs-10 col-xs-offset-2">
                         <section id="breadcrumbs">
-                            {{ self.ancestors }}
- {% breadcrumbs %}
+                            {% breadcrumbs %}
                          </section>
                     </div>
                     <div class="col-sm-2">
                         <div class="services__links">
-{% for item in self.services %}
-{% if item.id == self.id %}
-<h1> {{ item.title }} </h1>   
-{% else %}
-    
-<p><a href="{% pageurl item %}">{{ item.title }}</a> </p>
-{% endif %}
-
-{% endfor %}
+                            {% for item in services %}
+                                {% if item.id == self.id %}
+                                    <h1> {{ item.title }} </h1>   
+                                {% else %}
+                                    <p><a href="{% pageurl item %}">{{ item.title }}</a> </p>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </div>
                     <div class="col-sm-10 ">
