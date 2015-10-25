@@ -724,3 +724,8 @@ footer .aboutList li{
     height: 120px;
     margin-right: 10px;    
 }
+.services__content-service img {
+    height: 160px;
+    width: 280px;
+    margin: 0 auto;
+}

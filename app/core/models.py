@@ -155,7 +155,7 @@ choices=[(True, 'Мужчина'), (False, 'Женщина')])
 
 # ('image_carousel', blocks.ListBlock(ImageCarouselBlock(),template='yourapp/blocks/carousel.html',icon="image")),
 class PersonalIndexPage(Page):
-    body = default_body 
+    body = recomend_block_default
     # subpage_types = ['core.Persona']
 
     # template = "core/personal.html"
@@ -183,7 +183,7 @@ PersonalIndexPage.content_panels = [
 @register_snippet
 class Comment(models.Model):
     user = models.ForeignKey(User)
-    text = models.TextField("Текст")
+    text = models.TextField("Коментарий")
     published = models.BooleanField("Опубликовать", default=False)
     date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     class Meta:
@@ -278,17 +278,18 @@ HomePage.content_panels = [
 ]
 
 class DefaultPage(Page):
-    body = StreamField(
-            [
-        ('heading', blocks.CharBlock(classname="full title")),
-        ('paragraph', blocks.RichTextBlock()),
-        ('image', ImageChooserBlock()),
-    ],
+    # body = StreamField(
+    #         [
+    #     ('heading', blocks.CharBlock(classname="full title")),
+    #     ('paragraph', blocks.RichTextBlock()),
+    #     ('image', ImageChooserBlock()),
+    # ],
 
-            verbose_name="Тело",
-            default=""
+    #         verbose_name="Тело",
+    #         default=""
 
-            )
+    #         )
+    body = recomend_block_default
     # template = "core/licenses.html"
     template = "core/default.html"
     class Meta:
@@ -302,17 +303,18 @@ DefaultPage.content_panels = [
 
 
 class License(Page):
-    body = StreamField(
-            [
-        ('heading', blocks.CharBlock(classname="full title")),
-        ('paragraph', blocks.RichTextBlock()),
-        ('image', ImageChooserBlock()),
-    ],
+    # body = StreamField(
+    #         [
+    #     ('heading', blocks.CharBlock(classname="full title")),
+    #     ('paragraph', blocks.RichTextBlock()),
+    #     ('image', ImageChooserBlock()),
+    # ],
 
-            verbose_name="Тело",
-            default=""
+    #         verbose_name="Тело",
+    #         default=""
 
-            )
+    #         )
+    body = recomend_block_default
     # template = "core/licenses.html"
     template = "core/default.html"
     class Meta:
@@ -370,17 +372,18 @@ ServicePage.content_panels = [
 
 class Action(Page):
     active = models.BooleanField("Активная", default=True)
-    body = StreamField(
-            [
-        ('heading', blocks.CharBlock(classname="full title")),
-        ('paragraph', blocks.RichTextBlock()),
-        ('image', ImageChooserBlock()),
-    ],
+    # body = StreamField(
+    #         [
+    #     ('heading', blocks.CharBlock(classname="full title")),
+    #     ('paragraph', blocks.RichTextBlock()),
+    #     ('image', ImageChooserBlock()),
+    # ],
 
-            verbose_name="Тело",
-            default=""
+    #         verbose_name="Тело",
+    #         default=""
 
-            )
+    #         )
+    body = recomend_block_default
     image = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
@@ -403,6 +406,8 @@ Action.content_panels = [
     StreamFieldPanel('body'),
     ]
 from django.shortcuts import render
+
+from django.contrib import messages
 class Comments(Page):
 
     body = default_body 
@@ -419,10 +424,17 @@ class Comments(Page):
             form = CommentForm(request.POST)
 
             if form.is_valid():
-                inst = form.save()
+                if request.user.is_authenticated():
+                    inst = form.save(commit=False)
+                    inst.user = request.user
+                    inst.save()
+                    messages.info(request, 'Сообщенее добавлено.Оно будет доступно для всеобщего обозрения после проверки администратором.')
+                else:
+                    messages.error(request, 'Коментарии только для авторизированых пользователей.')
 # send message
                 return render(request, self.template, {
                     'self': self,
+                    'form': form,
                 })
         else:
             form = CommentForm()
