@@ -59,7 +59,7 @@ color: white;
                     <span class="mainContent__review-inConer">Отзыв</span>
                     <div class="mainContent__review-content">
                         {% if comm %}
-                        <h3> {{ comm.user.username }} </h3>
+                        <h3> {{ comm.user.first_name }} </h3>
                         <p>  {{ comm.text }} </p>
                         {% endif %}
 

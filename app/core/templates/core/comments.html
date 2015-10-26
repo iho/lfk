@@ -17,11 +17,11 @@
                 </section>
             </div>
                     <div class="col-sm-2">
-<div class="service__navs">
-    <p>О нас</p>
-                   {% for item in footer_items %}
-                        <p><a href="{% pageurl item %}">{{ item.title }}</a> </p>
-                    {% endfor %}
+                        <div class="service__navs">
+                            <p>О нас</p>
+                            {% for item in footer_items %}
+                            <p><a href="{% pageurl item %}">{{ item.title }}</a> </p>
+                            {% endfor %}
                         </div>
 
 
@@ -58,7 +58,8 @@
                 <img src="/static/img/women.png" class="img-responsive">
             {% endif %}
 
-            <h4>{{ comm.user.login }} sss/ {{ comm.user.login }} <a href="#"></a></h4>
+            <h4>{{ comm.user.first_name }} {{ comm.user.login }} <a href="#"></a></h4>
+
    
 <p><span class="quotes">“</span>{{ comm.text }}<span class="quotes">”</span></p>
 

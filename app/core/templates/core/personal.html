@@ -12,11 +12,11 @@
                          </section>
                     </div>
                     <div class="col-sm-2">
-<div class="service__navs">
-    <p>О нас</p>
-                   {% for item in footer_items %}
-                        <p><a href="{% pageurl item %}">{{ item.title }}</a> </p>
-                    {% endfor %}
+                        <div class="service__navs">
+                            <p>О нас</p>
+                            {% for item in footer_items %}
+                            <p><a href="{% pageurl item %}">{{ item.title }}</a> </p>
+                            {% endfor %}
                         </div>
 
 

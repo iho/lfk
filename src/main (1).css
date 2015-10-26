@@ -184,7 +184,7 @@ footer .aboutList li{
 }
 
 .servicesContent__links, .servicesContent__content, .services__links, .services__content, 
-.about__content, .service__navs{
+.about__content, .service__navs, .response__content{
     background-color: #fff;
     padding: 10px;
 }
@@ -251,7 +251,7 @@ footer .aboutList li{
     width: 100px;
     height: 150px;
     margin-right: 10px;
-    margin-left: 15px;
+
 }
 
 .personal__content-service{
@@ -259,14 +259,11 @@ footer .aboutList li{
 }
 
 .personal__content-service p {
-    padding-right: 35px;
     text-align: justify;
 }
-
-.services__content-service img {
-    height: 160px;
-    width: 280px;
-    margin: 0 auto;
+.response__content img {
+    float: left;
+    width: 80px;
+    height: 120px;
+    margin-right: 10px;    
 }
-
-
